@@ -12,9 +12,9 @@ public interface Connector {
 
    Offer getOffer(Order order);
 
-   ApprovedOrderInfo approveOrder(String aggregatorName, Order order);
+   ApprovedOrderInfo takeOffer(Offer offer);
 
    ApprovedOrderInfo updateOrder(Long orderId, Coordinates coordinates);
 
-   void cancelOrder(Long orderId);
+   void cancelOrder(String orderId);
 }

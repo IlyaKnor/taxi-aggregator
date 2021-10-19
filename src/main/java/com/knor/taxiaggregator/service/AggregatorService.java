@@ -16,7 +16,7 @@ public class AggregatorService {
     private final List<Connector> connectors;
 
     public List<AggregatorOffer> getOffers(Order order) {
-        return connectors.stream()
+        return connectors.parallelStream()
                 .map(connector -> AggregatorOffer.builder()
                         .offer(connector.getOffer(order))
                         .aggregatorName(connector.getAggregatorName())
@@ -24,10 +24,20 @@ public class AggregatorService {
                 .collect(Collectors.toList());
     }
 
-    public ApprovedOrderInfo approveOrder(String aggregatorName, Order order) {
+    public ApprovedOrderInfo takeOffer(AggregatorOffer aggregatorOffer) {
         return connectors.stream()
+                .filter(connector -> connector.getAggregatorName().equals(aggregatorOffer.getAggregatorName()))
+                .findFirst()
+                .map(connector -> connector.takeOffer(aggregatorOffer.getOffer()))
+                .orElseThrow(() -> new RuntimeException(String.format("Агрегатор %1$s не найден",
+                        aggregatorOffer.getAggregatorName())));
+    }
+
+    public void cancelOrder(String aggregatorName, String orderId) {
+        Connector foundConnector = connectors.stream()
                 .filter(connector -> connector.getAggregatorName().equals(aggregatorName))
-                .map(aggregator -> aggregator.approveOrder(aggregatorName,order))
-                .findFirst().orElseThrow(() -> new  RuntimeException("Агрегатор по данному имени не найден"));
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(String.format("Агрегатор %1$s не найден", aggregatorName)));
+        foundConnector.cancelOrder(orderId);
     }
 }

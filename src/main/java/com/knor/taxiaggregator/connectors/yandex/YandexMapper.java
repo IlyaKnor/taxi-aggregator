@@ -15,12 +15,12 @@ public class YandexMapper {
     public Offer mapToOffer(YandexResponse yandexResponse) {
         List<Option> options = yandexResponse.getOptions()
                 .stream()
-                .map(yandexOption -> Option.builder()
-                        .waitingTime(yandexOption.getWaitingTime())
-                        .pricing(yandexOption.getPrice())
+                .map(option -> Option.builder()
+                        .waitingTime(option.getWaitingTime())
+                        .pricing(option.getPrice())
                         .tariff(Tariff.builder()
-                                .id(yandexOption.getClassLevel())
-                                .displayName(yandexOption.getClassText())
+                                .id(option.getClassLevel())
+                                .displayName(option.getClassText())
                                 .build())
                         .build())
                 .collect(Collectors.toList());
@@ -33,18 +33,18 @@ public class YandexMapper {
     }
 
     public ApprovedOrderInfo mapApprovedInfo(YandexApproveResponse yandexApproveResponse) {
-        List<Coordinates> destination = yandexApproveResponse.getDestination()
+        List<Coordinates> destinations = yandexApproveResponse.getDestinations()
                 .stream()
-                .map(it -> Coordinates.builder()
-                        .latitude(it.getLatitude())
-                        .longitude(it.getLongitude())
+                .map(destination -> Coordinates.builder()
+                        .latitude(destination.getLatitude())
+                        .longitude(destination.getLongitude())
                         .build())
                 .collect(Collectors.toList());
 
         return ApprovedOrderInfo.builder()
                 .orderId(yandexApproveResponse.getOrderId())
                 .pickup(yandexApproveResponse.getPickup())
-                .destination(destination)
+                .destinations(destinations)
                 .driver(yandexApproveResponse.getDriver())
                 .vehicle(yandexApproveResponse.getVehicle())
                 .build();

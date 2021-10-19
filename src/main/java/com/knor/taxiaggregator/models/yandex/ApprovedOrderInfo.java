@@ -17,7 +17,7 @@ import java.util.List;
 public class ApprovedOrderInfo {
     private Long orderId;
     private Coordinates pickup;
-    private List<Coordinates> destination;
+    private List<Coordinates> destinations;
     private Driver driver;
     private Vehicle vehicle;
 }

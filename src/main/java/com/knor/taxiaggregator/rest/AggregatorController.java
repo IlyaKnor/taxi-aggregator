@@ -1,7 +1,6 @@
 package com.knor.taxiaggregator.rest;
 
 import com.knor.taxiaggregator.models.AggregatorOffer;
-import com.knor.taxiaggregator.models.Offer;
 import com.knor.taxiaggregator.models.Order;
 import com.knor.taxiaggregator.models.yandex.ApprovedOrderInfo;
 import com.knor.taxiaggregator.service.AggregatorService;
@@ -25,9 +24,16 @@ public class AggregatorController {
                 .body(aggregatorService.getOffers(order));
     }
 
-    @PostMapping(value = "/offer")
-    public ResponseEntity<ApprovedOrderInfo> getOffer(@RequestParam String name, @RequestBody Order order) {
+    @PostMapping(value = "/take-offer")
+    public ResponseEntity<ApprovedOrderInfo> takeOffer(@RequestBody AggregatorOffer aggregatorOffer) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
-                .body(aggregatorService.approveOrder(name, order));
+                .body(aggregatorService.takeOffer(aggregatorOffer));
+    }
+
+    @DeleteMapping(value = "/cancel")
+    public ResponseEntity<HttpStatus> cancelOrder(@RequestParam String aggregatorName, @RequestParam String orderId) {
+        aggregatorService.cancelOrder(aggregatorName, orderId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }

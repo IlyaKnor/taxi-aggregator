@@ -7,17 +7,21 @@ import com.knor.taxiaggregator.models.Coordinates;
 import com.knor.taxiaggregator.models.Order;
 import com.knor.taxiaggregator.models.yandex.YandexApproveResponse;
 import com.knor.taxiaggregator.models.yandex.YandexResponse;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
-@AllArgsConstructor
 public class YandexConnector implements Connector {
 
     private final YandexMapper yandexMapper;
     private final WebClient webClient;
+
+    public YandexConnector(@Value("${yandex.url}") String clientUrl, YandexMapper yandexMapper) {
+        this.yandexMapper = yandexMapper;
+        this.webClient = WebClient.create(clientUrl);
+    }
 
     @Override
     public String getAggregatorName() {
@@ -27,7 +31,7 @@ public class YandexConnector implements Connector {
     @Override
     public Offer getOffer(Order order) {
         YandexResponse yandexResponse = webClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/taxi/offer")
+                .uri(uriBuilder -> uriBuilder.path("/taxi/order")
                         .build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
@@ -37,9 +41,9 @@ public class YandexConnector implements Connector {
     }
 
     @Override
-    public ApprovedOrderInfo approveOrder(String aggregatorName, Order order) {
+    public ApprovedOrderInfo takeOffer(Offer offer) {
         YandexApproveResponse yandexApproveResponse = webClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/taxi/order")
+                .uri(uriBuilder -> uriBuilder.path("/taxi/offer")
                         .build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
@@ -53,9 +57,8 @@ public class YandexConnector implements Connector {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
-
     @Override
-    public void cancelOrder(Long orderId) {
-
+    public void cancelOrder(String orderId) {
+        throw new UnsupportedOperationException("Not supported yet");
     }
 }
