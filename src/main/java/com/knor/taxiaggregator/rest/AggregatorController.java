@@ -25,8 +25,8 @@ public class AggregatorController {
                 .body(aggregatorService.getOffers(order));
     }
 
-    @PostMapping(value = "/{name}/{order}")
-    public ResponseEntity<ApprovedOrderInfo> getOffer(@PathVariable String name,@PathVariable Order order) {
+    @PostMapping(value = "/offer")
+    public ResponseEntity<ApprovedOrderInfo> getOffer(@RequestParam String name, @RequestBody Order order) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(aggregatorService.approveOrder(name, order));
     }
