@@ -37,7 +37,7 @@ public class YandexConnector implements Connector {
     }
 
     @Override
-    public ApprovedOrderInfo approveOrder() {
+    public ApprovedOrderInfo approveOrder(String aggregatorName, Order order) {
         YandexApproveResponse yandexApproveResponse = webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/taxi/order")
                         .build())

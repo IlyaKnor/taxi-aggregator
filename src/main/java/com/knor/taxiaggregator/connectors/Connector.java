@@ -12,7 +12,7 @@ public interface Connector {
 
    Offer getOffer(Order order);
 
-   ApprovedOrderInfo approveOrder();
+   ApprovedOrderInfo approveOrder(String aggregatorName, Order order);
 
    ApprovedOrderInfo updateOrder(Long orderId, Coordinates coordinates);
 

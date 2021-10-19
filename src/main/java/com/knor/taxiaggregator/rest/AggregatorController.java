@@ -8,10 +8,7 @@ import com.knor.taxiaggregator.service.AggregatorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,9 +25,9 @@ public class AggregatorController {
                 .body(aggregatorService.getOffers(order));
     }
 
-    @PostMapping(value = "/order")
-    public ResponseEntity<ApprovedOrderInfo> getOrder() {
+    @PostMapping(value = "/{name}/{order}")
+    public ResponseEntity<ApprovedOrderInfo> getOffer(@PathVariable String name,@PathVariable Order order) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
-                .body(aggregatorService.approveOrder());
+                .body(aggregatorService.approveOrder(name, order));
     }
 }

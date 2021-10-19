@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AggregatorService {
     private final List<Connector> connectors;
-    private final Connector connector;
 
     public List<AggregatorOffer> getOffers(Order order) {
         return connectors.stream()
@@ -25,7 +24,10 @@ public class AggregatorService {
                 .collect(Collectors.toList());
     }
 
-    public ApprovedOrderInfo approveOrder() {
-        return connector.approveOrder();
+    public ApprovedOrderInfo approveOrder(String aggregatorName, Order order) {
+        return connectors.stream()
+                .filter(connector -> connector.getAggregatorName().equals(aggregatorName))
+                .map(aggregator -> aggregator.approveOrder(aggregatorName,order))
+                .findFirst().orElseThrow(() -> new  RuntimeException("Агрегатор по данному имени не найден"));
     }
 }
