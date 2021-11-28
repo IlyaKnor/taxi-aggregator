@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Order {
-    private Coordinates pointOfDeparture;
+    private Coordinates pickup;
     private Coordinates destination;
     private Currency currency;
 }
