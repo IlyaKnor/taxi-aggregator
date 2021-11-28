@@ -5,21 +5,24 @@ import com.knor.taxiaggregator.models.AggregatorOffer;
 import com.knor.taxiaggregator.models.Order;
 import com.knor.taxiaggregator.models.yandex.ApprovedOrderInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AggregatorService {
     private final List<Connector> connectors;
+    private final AmqpTemplate template;
 
     public List<AggregatorOffer> getOffers(Order order) {
-        return connectors.parallelStream()
+        return connectors.stream()
                 .map(connector -> AggregatorOffer.builder()
                         .offer(connector.getOffer(order))
-                        .aggregatorName(connector.getAggregatorName())
+                        .aggregatorName(connector.getAggregatorName().toLowerCase(Locale.ROOT))
                         .build())
                 .collect(Collectors.toList());
     }
