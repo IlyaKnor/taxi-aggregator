@@ -8,13 +8,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ApprovedOrderInfo {
+public class ApprovedOrderInfo implements Serializable {
     private Long orderId;
     private Coordinates pickup;
     private List<Coordinates> destinations;
