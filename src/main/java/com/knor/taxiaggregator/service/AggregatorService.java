@@ -2,14 +2,17 @@ package com.knor.taxiaggregator.service;
 
 import com.knor.taxiaggregator.connectors.Connector;
 import com.knor.taxiaggregator.models.AggregatorOffer;
+import com.knor.taxiaggregator.models.Offer;
 import com.knor.taxiaggregator.models.Order;
 import com.knor.taxiaggregator.models.yandex.ApprovedOrderInfo;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,12 +20,19 @@ import java.util.stream.Collectors;
 public class AggregatorService {
     private final List<Connector> connectors;
     private final AmqpTemplate template;
+    private static final Logger logger = LoggerFactory.getLogger(AggregatorService.class);
 
     public List<AggregatorOffer> getOffers(Order order) {
-        return connectors.stream()
-                .map(connector -> AggregatorOffer.builder()
-                        .offer(connector.getOffer(order))
-                        .aggregatorName(connector.getAggregatorName().toLowerCase(Locale.ROOT))
+        HashMap<String, Mono<Offer>> offers = new HashMap<>();
+        connectors.forEach(connector -> offers.put(
+                connector.getAggregatorName().toLowerCase(Locale.ROOT),
+                connector.getOffer(order))
+        );
+
+        return offers.entrySet().stream()
+                .map(entry -> AggregatorOffer.builder()
+                        .aggregatorName(entry.getKey())
+                        .offer(entry.getValue().block())
                         .build())
                 .collect(Collectors.toList());
     }
