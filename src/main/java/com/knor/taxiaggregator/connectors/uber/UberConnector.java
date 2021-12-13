@@ -1,12 +1,12 @@
-package com.knor.taxiaggregator.connectors.yandex;
+package com.knor.taxiaggregator.connectors.uber;
 
 import com.knor.taxiaggregator.connectors.Connector;
-import com.knor.taxiaggregator.models.Offer;
-import com.knor.taxiaggregator.models.yandex.ApprovedOrderInfo;
 import com.knor.taxiaggregator.models.Coordinates;
+import com.knor.taxiaggregator.models.Offer;
 import com.knor.taxiaggregator.models.Order;
-import com.knor.taxiaggregator.models.yandex.YandexApproveResponse;
-import com.knor.taxiaggregator.models.yandex.YandexResponse;
+import com.knor.taxiaggregator.models.uber.UberApproveResponse;
+import com.knor.taxiaggregator.models.uber.UberResponse;
+import com.knor.taxiaggregator.models.yandex.ApprovedOrderInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -14,19 +14,19 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
-public class YandexConnector implements Connector {
+public class UberConnector implements Connector {
 
-    private final YandexMapper yandexMapper;
+    private final UberMapper uberMapper;
     private final WebClient webClient;
 
-    public YandexConnector(@Value("${yandex.url}") String clientUrl, YandexMapper yandexMapper) {
-        this.yandexMapper = yandexMapper;
+    public UberConnector(@Value("${uber.url}") String clientUrl, UberMapper uberMapper) {
+        this.uberMapper = uberMapper;
         this.webClient = WebClient.create(clientUrl);
     }
 
     @Override
     public String getAggregatorName() {
-        return "Yandex";
+        return "Uber";
     }
 
     @Override
@@ -36,20 +36,20 @@ public class YandexConnector implements Connector {
                         .build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(YandexResponse.class)
-                .map(yandexMapper::mapToOffer);
+                .bodyToMono(UberResponse.class)
+                .map(uberMapper::mapToOffer);
     }
 
     @Override
     public ApprovedOrderInfo takeOffer(Offer offer) {
-        YandexApproveResponse yandexApproveResponse = webClient.post()
+        UberApproveResponse uberApproveResponse = webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/taxi/offer")
                         .build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(YandexApproveResponse.class)
+                .bodyToMono(UberApproveResponse.class)
                 .block();
-        return yandexMapper.mapApprovedInfo(yandexApproveResponse);
+        return uberMapper.mapApprovedInfo(uberApproveResponse);
     }
 
     @Override
