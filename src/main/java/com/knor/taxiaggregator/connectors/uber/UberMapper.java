@@ -6,7 +6,6 @@ import com.knor.taxiaggregator.models.Option;
 import com.knor.taxiaggregator.models.Tariff;
 import com.knor.taxiaggregator.models.uber.UberApproveResponse;
 import com.knor.taxiaggregator.models.uber.UberResponse;
-import com.knor.taxiaggregator.models.yandex.ApprovedOrderInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

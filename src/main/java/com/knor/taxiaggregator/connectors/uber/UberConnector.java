@@ -4,9 +4,9 @@ import com.knor.taxiaggregator.connectors.Connector;
 import com.knor.taxiaggregator.models.Coordinates;
 import com.knor.taxiaggregator.models.Offer;
 import com.knor.taxiaggregator.models.Order;
+import com.knor.taxiaggregator.models.OrderInfo;
 import com.knor.taxiaggregator.models.uber.UberApproveResponse;
 import com.knor.taxiaggregator.models.uber.UberResponse;
-import com.knor.taxiaggregator.models.yandex.ApprovedOrderInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ public class UberConnector implements Connector {
     }
 
     @Override
-    public ApprovedOrderInfo takeOffer(Offer offer) {
+    public OrderInfo takeOffer(Offer offer) {
         UberApproveResponse uberApproveResponse = webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/taxi/offer")
                         .build())
@@ -49,11 +49,15 @@ public class UberConnector implements Connector {
                 .retrieve()
                 .bodyToMono(UberApproveResponse.class)
                 .block();
-        return uberMapper.mapApprovedInfo(uberApproveResponse);
+        return OrderInfo.builder()
+                .orderId(uberApproveResponse.getOrderId())
+                .driver(uberApproveResponse.getDriver())
+                .vehicle(uberApproveResponse.getVehicle())
+                .build();
     }
 
     @Override
-    public ApprovedOrderInfo updateOrder(Long orderId, Coordinates coordinates) {
+    public OrderInfo updateOrder(Long orderId, Coordinates coordinates) {
         throw new UnsupportedOperationException("Not supported yet");
     }
 

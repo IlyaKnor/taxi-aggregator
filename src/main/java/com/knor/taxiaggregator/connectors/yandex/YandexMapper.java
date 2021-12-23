@@ -1,7 +1,6 @@
 package com.knor.taxiaggregator.connectors.yandex;
 
 import com.knor.taxiaggregator.models.*;
-import com.knor.taxiaggregator.models.yandex.ApprovedOrderInfo;
 import com.knor.taxiaggregator.models.yandex.YandexApproveResponse;
 import com.knor.taxiaggregator.models.yandex.YandexResponse;
 import org.springframework.stereotype.Component;

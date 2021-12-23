@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class YandexApproveResponse {
-    private Long orderId;
+    private String orderId;
     private Coordinates pickup;
     private List<Coordinates> destinations;
     private Driver driver;
