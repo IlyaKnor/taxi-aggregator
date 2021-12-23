@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class UberApproveResponse {
-    private String orderId;
+    private Long orderId;
     private Coordinates pickup;
     private List<Coordinates> destinations;
     private Driver driver;

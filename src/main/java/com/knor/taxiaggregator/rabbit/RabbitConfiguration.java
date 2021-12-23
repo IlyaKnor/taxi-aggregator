@@ -34,7 +34,7 @@ public class RabbitConfiguration {
 
     @Bean
     public Queue yandexQueue() {
-        return new Queue("orderQueue");
+        return new Queue("yandexQueue");
     }
 
     @Bean
@@ -44,7 +44,7 @@ public class RabbitConfiguration {
 
     @Bean
     Binding yandexBinding() {
-        return BindingBuilder.bind(yandexQueue()).to(directExchange()).with("order");
+        return BindingBuilder.bind(yandexQueue()).to(directExchange()).with("yandex");
     }
 
     @Bean
