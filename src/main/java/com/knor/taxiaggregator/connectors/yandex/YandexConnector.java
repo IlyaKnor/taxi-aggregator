@@ -2,9 +2,9 @@ package com.knor.taxiaggregator.connectors.yandex;
 
 import com.knor.taxiaggregator.connectors.Connector;
 import com.knor.taxiaggregator.models.Offer;
-import com.knor.taxiaggregator.models.yandex.ApprovedOrderInfo;
 import com.knor.taxiaggregator.models.Coordinates;
 import com.knor.taxiaggregator.models.Order;
+import com.knor.taxiaggregator.models.OrderInfo;
 import com.knor.taxiaggregator.models.yandex.YandexApproveResponse;
 import com.knor.taxiaggregator.models.yandex.YandexResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +41,7 @@ public class YandexConnector implements Connector {
     }
 
     @Override
-    public ApprovedOrderInfo takeOffer(Offer offer) {
+    public OrderInfo takeOffer(Offer offer) {
         YandexApproveResponse yandexApproveResponse = webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/taxi/offer")
                         .build())
@@ -49,11 +49,15 @@ public class YandexConnector implements Connector {
                 .retrieve()
                 .bodyToMono(YandexApproveResponse.class)
                 .block();
-        return yandexMapper.mapApprovedInfo(yandexApproveResponse);
+        return OrderInfo.builder()
+                .orderId(yandexApproveResponse.getOrderId())
+                .driver(yandexApproveResponse.getDriver())
+                .vehicle(yandexApproveResponse.getVehicle())
+                .build();
     }
 
     @Override
-    public ApprovedOrderInfo updateOrder(Long orderId, Coordinates coordinates) {
+    public OrderInfo updateOrder(Long orderId, Coordinates coordinates) {
         throw new UnsupportedOperationException("Not supported yet");
     }
 
